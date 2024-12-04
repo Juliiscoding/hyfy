@@ -1,4 +1,53 @@
 import streamlit as st
+# CSS für zentriertes Layout und responsives Design
+st.markdown(
+    """
+    <style>
+    /* Gesamtes Layout zentrieren */
+    .stApp {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+    }
+
+    /* Logo anpassen */
+    .logo-container img {
+        max-width: 60%; /* Passt das Logo flexibel an */
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    /* Login-Formular zentrieren */
+    .login-container {
+        text-align: center;
+        width: 100%;
+        max-width: 400px; /* Maximale Breite für die Anmeldemaske */
+    }
+
+    /* Login-Button Design */
+    button[kind="primary"] {
+        background-color: #007BFF; /* Ändert die Farbe des Buttons */
+        color: white;
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+    }
+    button[kind="primary"]:hover {
+        background-color: #0056b3;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Initialisiere den Authentifizierungsstatus
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
 from authentication import authenticate_user
 from kpi_calculations import process_excel_data
 
