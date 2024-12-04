@@ -12,10 +12,9 @@ st.markdown(
         align-items: center;
         flex-direction: column;
         height: 100vh;
-        margin: 0;
     }
     .logo-container img {
-        max-width: 50%;
+        max-width: 50%; 
         height: auto;
         margin-bottom: 20px;
     }
@@ -41,13 +40,12 @@ st.markdown(
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
-if not st.session_state.authenticated:
-    # Logo anzeigen
+# Funktion zur Anzeige der Login-Seite
+def show_login_page():
     st.markdown('<div class="logo-container">', unsafe_allow_html=True)
     st.image("images/your_logo.png", use_column_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Anmeldemaske
     st.markdown(
         """
         <div class="login-container">
@@ -63,14 +61,15 @@ if not st.session_state.authenticated:
     if login_button:
         if authenticate_user(username, password):  # Login-Funktion aus authentication.py
             st.session_state.authenticated = True
-            st.experimental_rerun()  # App neu laden, um die Ansicht zu aktualisieren
+            st.experimental_set_query_params(page="dashboard")
+            st.success(f"Willkommen, {username}!")
         else:
             st.error("Ungültige Anmeldedaten. Bitte erneut versuchen.")
-else:
-    # Wenn authentifiziert, zeige das Dashboard
+
+# Funktion zur Anzeige des Dashboards
+def show_dashboard():
     st.title("KPI-Dashboard für Limitplanung")
 
-    # Excel-Datei hochladen
     uploaded_file = st.file_uploader("Laden Sie eine Excel-Datei hoch", type=["xlsx"])
     if uploaded_file:
         sheet_name = st.sidebar.text_input("Sheet-Name eingeben", "Limit")
@@ -80,5 +79,16 @@ else:
             st.dataframe(data)
         except Exception as e:
             st.error(f"Fehler beim Verarbeiten der Datei: {e}")
-    else:
-        st.info("Bitte laden Sie eine Excel-Datei hoch, um fortzufahren.")
+
+    if st.button("Abmelden"):
+        st.session_state.authenticated = False
+        st.experimental_set_query_params(page="login")
+
+# Hauptlogik zur Navigation
+query_params = st.experimental_get_query_params()
+page = query_params.get("page", ["login"])[0]
+
+if not st.session_state.authenticated or page == "login":
+    show_login_page()
+else:
+    show_dashboard()
