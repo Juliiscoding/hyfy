@@ -2,7 +2,7 @@ import streamlit as st
 from authentication import authenticate_user
 from kpi_calculations import upload_and_calculate
 
-# CSS for centering and styling
+# CSS für zentriertes Layout und responsives Design
 st.markdown(
     """
     <style>
@@ -14,14 +14,14 @@ st.markdown(
         height: 100vh;
     }
     .logo-container img {
-        max-width: 50%;
+        max-width: 50%; /* Logo passt sich an die Fenstergröße an */
         height: auto;
         margin-bottom: 20px;
     }
     .login-container {
         text-align: center;
+        width: 100%;
         max-width: 400px;
-        margin: auto;
     }
     h2 {
         text-align: center;
@@ -34,18 +34,18 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Initialize session state for authentication
+# Initialisiere den Authentifizierungsstatus
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
-# Show login if not authenticated
+# Authentifizierungs-Logik
 if not st.session_state.authenticated:
-    # Logo
+    # Logo anzeigen
     st.markdown('<div class="logo-container">', unsafe_allow_html=True)
     st.image("images/your_logo.png", use_column_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Login form
+    # Anmeldemaske
     st.markdown(
         """
         <div class="login-container">
@@ -59,12 +59,13 @@ if not st.session_state.authenticated:
     login_button = st.button("Anmelden")
 
     if login_button:
-        if authenticate_user(username, password):
-            st.session_state.authenticated = True
-            st.success("Login erfolgreich!")
-            st.experimental_rerun()  # Refresh to reflect the new state
+        if authenticate_user(username, password):  # Login-Funktion aus authentication.py
+            st.session_state.authenticated = True  # Authentifiziert setzen
+            st.experimental_set_query_params(authenticated="true")  # Parameter aktualisieren
+            st.experimental_rerun()  # App neu laden
         else:
             st.error("Ungültige Anmeldedaten. Bitte erneut versuchen.")
 else:
-    # Display KPI Dashboard
+    # Zeige das KPI-Dashboard an
     upload_and_calculate()
+
