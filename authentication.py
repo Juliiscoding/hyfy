@@ -5,7 +5,7 @@ USER_CREDENTIALS = {
     "user1": "password1"
 }
 
-def check_login(username, password):
+def authenticate_user(username, password):  # Funktion umbenannt
     """Prüft, ob Benutzername und Passwort korrekt sind."""
     return USER_CREDENTIALS.get(username) == password
 
@@ -18,7 +18,7 @@ def login():
     login_button = st.button("Anmelden")
 
     if login_button:
-        if check_login(username, password):
+        if authenticate_user(username, password):  # Verwendung der umbenannten Funktion
             st.session_state.authenticated = True
             st.experimental_rerun()
         else:
