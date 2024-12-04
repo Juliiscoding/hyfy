@@ -1,10 +1,11 @@
 import streamlit as st
+from authentication import authenticate_user
+from kpi_calculations import process_excel_data
 
 # CSS für zentriertes Layout und responsives Design
 st.markdown(
     """
     <style>
-    /* Gesamtes Layout zentrieren */
     .stApp {
         display: flex;
         justify-content: center;
@@ -13,50 +14,28 @@ st.markdown(
         height: 100vh;
         margin: 0;
     }
-
-    /* Logo anpassen */
     .logo-container img {
-        max-width: 60%; /* Passt das Logo flexibel an */
+        max-width: 50%;
         height: auto;
         margin-bottom: 20px;
     }
-
-    /* Login-Formular zentrieren */
     .login-container {
         text-align: center;
         width: 100%;
-        max-width: 400px; /* Maximale Breite für die Anmeldemaske */
+        max-width: 400px;
     }
-
-    /* Login-Button Design */
-    button[kind="primary"] {
-        background-color: #007BFF; /* Ändert die Farbe des Buttons */
-        color: white;
-        font-size: 16px;
-        padding: 10px 20px;
-        border-radius: 5px;
-        border: none;
-    }
-    button[kind="primary"]:hover {
-        background-color: #0056b3;
-    }
-
-    /* Text-Styling für den Titel */
     h2 {
         text-align: center;
-        font-family: "Avenir", Arial, sans-serif; /* Avenir mit Fallbacks */
-        font-size: 24px; /* Schriftgröße */
-        font-weight: 400; /* Schriftstärke */
-        color: #333; /* Farbe des Titels */
-        margin-bottom: 20px; /* Abstand nach unten */
+        font-family: "Avenir", Arial, sans-serif;
+        font-size: 24px;
+        font-weight: 400;
+        color: #333;
+        margin-bottom: 20px;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
-
-from authentication import authenticate_user
-from kpi_calculations import process_excel_data
 
 # Initialisiere den Authentifizierungsstatus
 if "authenticated" not in st.session_state:
@@ -84,11 +63,11 @@ if not st.session_state.authenticated:
     if login_button:
         if authenticate_user(username, password):  # Login-Funktion aus authentication.py
             st.session_state.authenticated = True
-            st.success(f"Willkommen, {username}!")
+            st.experimental_rerun()  # App neu laden, um die Ansicht zu aktualisieren
         else:
             st.error("Ungültige Anmeldedaten. Bitte erneut versuchen.")
 else:
-    # KPI-Dashboard
+    # Wenn authentifiziert, zeige das Dashboard
     st.title("KPI-Dashboard für Limitplanung")
 
     # Excel-Datei hochladen
@@ -101,3 +80,5 @@ else:
             st.dataframe(data)
         except Exception as e:
             st.error(f"Fehler beim Verarbeiten der Datei: {e}")
+    else:
+        st.info("Bitte laden Sie eine Excel-Datei hoch, um fortzufahren.")
