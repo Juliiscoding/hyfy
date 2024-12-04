@@ -45,10 +45,10 @@ st.markdown(
     h2 {
         text-align: center;
         font-family: "Avenir", Arial, sans-serif; /* Avenir mit Fallbacks */
-        font-size: 24px; /* Schriftgröße anpassen */
+        font-size: 24px; /* Schriftgröße */
         font-weight: 400; /* Schriftstärke */
         color: #333; /* Farbe des Titels */
-        margin-bottom: 20px;
+        margin-bottom: 20px; /* Abstand nach unten */
     }
     </style>
     """,
