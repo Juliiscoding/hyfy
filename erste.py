@@ -1,4 +1,5 @@
 import streamlit as st
+
 # CSS für zentriertes Layout und responsives Design
 st.markdown(
     """
@@ -39,43 +40,23 @@ st.markdown(
     button[kind="primary"]:hover {
         background-color: #0056b3;
     }
+
+    /* Text-Styling für den Titel */
+    h2 {
+        text-align: center;
+        font-family: "Avenir", Arial, sans-serif; /* Avenir mit Fallbacks */
+        font-size: 24px; /* Schriftgröße anpassen */
+        font-weight: 400; /* Schriftstärke */
+        color: #333; /* Farbe des Titels */
+        margin-bottom: 20px;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
-
-# Initialisiere den Authentifizierungsstatus
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
 
 from authentication import authenticate_user
 from kpi_calculations import process_excel_data
-
-# CSS für zentriertes Layout und responsives Design
-st.markdown(
-    """
-    <style>
-    .stApp {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        height: 100vh;
-    }
-    .logo-container img {
-        max-width: 50%; /* Logo passt sich an die Fenstergröße an */
-        height: auto;
-        margin-bottom: 20px;
-    }
-    .login-container {
-        text-align: center;
-        width: 100%;
-        max-width: 400px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
 
 # Initialisiere den Authentifizierungsstatus
 if "authenticated" not in st.session_state:
