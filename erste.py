@@ -1,8 +1,8 @@
 import streamlit as st
 from authentication import authenticate_user
-from kpi_calculations import process_excel_data
+from kpi_calculations import upload_and_calculate
 
-# CSS für zentriertes Layout und responsives Design
+# CSS for centering and styling
 st.markdown(
     """
     <style>
@@ -14,38 +14,38 @@ st.markdown(
         height: 100vh;
     }
     .logo-container img {
-        max-width: 50%; 
+        max-width: 50%;
         height: auto;
         margin-bottom: 20px;
     }
     .login-container {
         text-align: center;
-        width: 100%;
         max-width: 400px;
+        margin: auto;
     }
     h2 {
         text-align: center;
         font-family: "Avenir", Arial, sans-serif;
         font-size: 24px;
-        font-weight: 400;
         color: #333;
-        margin-bottom: 20px;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# Initialisiere den Authentifizierungsstatus
+# Initialize session state for authentication
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
-# Funktion zur Anzeige der Login-Seite
-def show_login_page():
+# Show login if not authenticated
+if not st.session_state.authenticated:
+    # Logo
     st.markdown('<div class="logo-container">', unsafe_allow_html=True)
     st.image("images/your_logo.png", use_column_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
+    # Login form
     st.markdown(
         """
         <div class="login-container">
@@ -59,36 +59,12 @@ def show_login_page():
     login_button = st.button("Anmelden")
 
     if login_button:
-        if authenticate_user(username, password):  # Login-Funktion aus authentication.py
+        if authenticate_user(username, password):
             st.session_state.authenticated = True
-            st.experimental_set_query_params(page="dashboard")
-            st.success(f"Willkommen, {username}!")
+            st.success("Login erfolgreich!")
+            st.experimental_rerun()  # Refresh to reflect the new state
         else:
             st.error("Ungültige Anmeldedaten. Bitte erneut versuchen.")
-
-# Funktion zur Anzeige des Dashboards
-def show_dashboard():
-    st.title("KPI-Dashboard für Limitplanung")
-
-    uploaded_file = st.file_uploader("Laden Sie eine Excel-Datei hoch", type=["xlsx"])
-    if uploaded_file:
-        sheet_name = st.sidebar.text_input("Sheet-Name eingeben", "Limit")
-        try:
-            data = process_excel_data(uploaded_file, sheet_name)  # Funktion aus kpi_calculations.py
-            st.write("Hochgeladene Daten:")
-            st.dataframe(data)
-        except Exception as e:
-            st.error(f"Fehler beim Verarbeiten der Datei: {e}")
-
-    if st.button("Abmelden"):
-        st.session_state.authenticated = False
-        st.experimental_set_query_params(page="login")
-
-# Hauptlogik zur Navigation
-query_params = st.experimental_get_query_params()
-page = query_params.get("page", ["login"])[0]
-
-if not st.session_state.authenticated or page == "login":
-    show_login_page()
 else:
-    show_dashboard()
+    # Display KPI Dashboard
+    upload_and_calculate()
